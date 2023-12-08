@@ -1,4 +1,4 @@
-![logo](G:\My Drive\Colab Notebooks\[01] Research\mongodb-learning\learn_mongo\logo.png)
+<center><img src="logo.png" style="height: 80px;align:center;"></center>
 
 # 1. Get started
 
