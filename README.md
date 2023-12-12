@@ -142,7 +142,7 @@ First, look for parts of your code that perform specific tasks and are likely to
 
 #### 4.2. Define Functions
 
-Once you've identified a reusable component, encapsulate its logic in a function. This makes your code modular and easier to maintain. Each function should do one thing and do it well (this is known as the `Single Responsibility Principle`).
+Once you've identified a reusable component, encapsulate its logic in a function. This makes your code modular and easier to maintain. **Each function should do one thing and do it well** (this is known as the `Single Responsibility Principle`).
 
 For example, if you frequently read data from different sources (CSV, SQL, etc.), you can create separate functions like `read_csv_file(filepath)` or `read_from_sql(database_url, query)`.
 
@@ -156,10 +156,66 @@ For instance, in a `read_csv_file(filepath)` function, you might want to catch a
 
 After defining your functions, it’s crucial to test them with different inputs and scenarios to ensure they work as expected and handle errors properly.
 
-**Translation of 3.2 using the above principles**
+- Unit testing
+- Acceptance testing
+- Python Testing (assertions)
+
+**Function Testing Principle:** Given `x` I do `y` and expect `z`
+
+**Translation of 3.2 using the principles 4.1: Reusable Components Architecture and 4.2: Single Responsibility in Functions**
 
 ```python
+# SETTINGS CLASS
+import pandas as pd
+import pymongo
+from pymongo import MongoClient
+import os
+# azure key vault 
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 
+#----------------------------------------------------------------------------------------------------
+# define security credentials management function (azure key vault)
+def getCreds(secret_name, key_vault_url):
+    # Use DefaultAzureCredential to authenticate - this method can use various authentication methods
+    credential = DefaultAzureCredential()
+
+    # Create a SecretClient using the Key Vault URL and the credential
+    client = SecretClient(vault_url=key_vault_url, credential=credential)
+
+    # Retrieve a secret using its name
+    retrieved_secret = client.get_secret(secret_name)
+    return retrieved_secret
+
+# define mongoDB client connection
+def buildConn(connString, database, collection):
+    # Connect to MongoDB
+    client = pymongo.MongoClient(connString)
+
+    # Access the database and collection
+    db = client[database]
+    collection = db[collection]
+    return collection
+#----------------------------------------------------------------------------------------------------
+
+# set getCreds values: azure key vault URL and secret name
+key_vault_url = os.environ.get('azure_key_vault_url')
+secret_name = "mongoCluster"
+
+# get the secret
+connString = getCreds(secret_name, key_vault_url)
+print(type(connString))
+
+# set buildConn values: mongoDB cluster database and collection name
+database = "sample_training"
+collection = "companies"
+# build the connection
+results = buildConn(connString.value, database, collection)
+print(type(results))
+
+# Create DataFrame
+df = pd.DataFrame(list(results.find()))
+df
 ```
 
 
