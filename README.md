@@ -134,7 +134,25 @@ df = pd.DataFrame(list(results))
 
 
 
-## 4. Improving Code Structure
+## 4. Code Refactoring (DRY and Currying)
+
+- **Don't Repeat Yourself** (DRY) is a fundamental concept in software  development, including in Python programming. It emphasises the  importance of reducing repetition of information or code. The core idea  behind DRY is to avoid redundancy, which can lead to a more efficient,  maintainable, and less error-prone codebase.
+
+- **Currying** is a functional programming concept where a function that accepts multiple arguments is transformed into a sequence of functions, each taking a single argument. It's named after the mathematician **Haskell Curry**. While currying is not a built-in feature of Python, it can be implemented using closures and higher-order functions. _Python does not support currying directly, but it can be implemented using closures._
+
+  ```python
+  def curry_add(x):
+      def add_y(y):
+          return x + y
+      return add_y
+  
+  # Usage
+  add_five = curry_add(5)
+  result = add_five(3)  # result is 8
+  
+  ```
+
+  
 
 #### 4.1. Identify Reusable Components
 
